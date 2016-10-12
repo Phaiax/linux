@@ -13,7 +13,12 @@
  restart:
  	/* Reset the pending bitmask before enabling irqs */
  	set_softirq_pending(0);
- 
+
+ 	++++++++++++++++++++++
+ 			exynos_ss_softirq(ESS_FLAG_SOFTIRQ, h->action, ESS_FLAG_IN);
+			h->action(h);
+			exynos_ss_softirq(ESS_FLAG_SOFTIRQ, h->action, ESS_FLAG_OUT);
+ 	++++++++++++++++++++++
 -	local_irq_enable();
 -
 -	h = softirq_vec;
@@ -103,7 +108,11 @@
 -			if (!atomic_read(&t->count)) {
 -				if (!test_and_clear_bit(TASKLET_STATE_SCHED, &t->state))
 -					BUG();
--				t->func(t->data);
+	-			exynos_ss_softirq(ESS_FLAG_SOFTIRQ_TASKLET,
+	-						t->func, ESS_FLAG_IN);
+	-			t->func(t->data);
+	-			exynos_ss_softirq(ESS_FLAG_SOFTIRQ_TASKLET,
+	-						t->func, ESS_FLAG_OUT);
 -				tasklet_unlock(t);
 -				continue;
 -			}
@@ -207,7 +216,11 @@
 -			if (!atomic_read(&t->count)) {
 -				if (!test_and_clear_bit(TASKLET_STATE_SCHED, &t->state))
 -					BUG();
--				t->func(t->data);
+	-			exynos_ss_softirq(ESS_FLAG_SOFTIRQ_HI_TASKLET,
+	-						t->func, ESS_FLAG_IN);
+	-			t->func(t->data);
+	-			exynos_ss_softirq(ESS_FLAG_SOFTIRQ_HI_TASKLET,
+	-						t->func, ESS_FLAG_OUT);
 -				tasklet_unlock(t);
 -				continue;
 -			}
