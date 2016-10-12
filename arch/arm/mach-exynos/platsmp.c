@@ -176,7 +176,7 @@ static int __cpuinit exynos_boot_secondary(unsigned int cpu, struct task_struct 
 
 	ret = exynos_power_up_cpu(cpu);
 	if (ret) {
-		spin_unlock(&boot_lock);
+		raw_spin_unlock(&boot_lock);
 		return ret;
 	}
 
